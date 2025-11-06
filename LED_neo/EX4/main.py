@@ -1,24 +1,27 @@
-from time import ticks_ms, ticks_diff, sleep_ms
-from sound import SoundDetector
-from rgb import RGBLed
+from time import sleep_ms
+from urandom import getrandbits
+
+from Led_WS2813 import LedWS2813     # fichier où tu as mis la classe LED
+from DetecteurSon import DetecteurSon   # ton fichier ci-dessus
+
+def couleur_aleatoire(led):
+    # génère une couleur RGB (0..255)
+    r = getrandbits(8)
+    v = getrandbits(8)
+    b = getrandbits(8)
+    led.couleur(r, v, b)
 
 def main():
-    s = SoundDetector()
-    led = RGBLed()
-    last_minute = ticks_ms()
+    led = LedWS2813(broche=18)
+    led.eteindre()
+
+    detecteur = DetecteurSon(broche_adc=26, seuil=18000, delai_ms=150)
+
     while True:
-        if s.detect_beat():
-            led.random_color()
-        bpm = s.get_instant_bpm()
-        now = ticks_ms()
-        if ticks_diff(now, last_minute) >= 60000:
-            if bpm > 0:
-                try:
-                    with open("bpm_log.txt", "a") as f:
-                        f.write("BPM: {}\n".format(bpm))
-                except:
-                    pass
-            last_minute = now
+        if detecteur.detecter_pic():
+            # à chaque pic sonore : nouvelle couleur
+            couleur_aleatoire(led)
+
         sleep_ms(20)
 
 main()
