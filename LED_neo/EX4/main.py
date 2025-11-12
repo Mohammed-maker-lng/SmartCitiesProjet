@@ -1,7 +1,7 @@
 from time import sleep_ms
 from urandom import getrandbits
 
-from Led_WS2813 import LedWS2813     # fichier où tu as mis la classe LED
+from LedWS2813 import LedWS2813     # fichier où tu as mis la classe LED
 from DetecteurSon import DetecteurSon   # ton fichier ci-dessus
 
 def couleur_aleatoire(led):
